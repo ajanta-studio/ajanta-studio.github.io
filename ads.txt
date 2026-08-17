@@ -1,0 +1,5 @@
+# ads.txt for Ajanta Studio (https://ajanta-studio.github.io)
+# Format: <Field #1 - Domain>, <Field #2 - Publisher Account ID>, <Field #3 - Relationship: DIRECT | RESELLER>, <Field #4 - Certification Authority ID (Optional)>
+#
+# Replace pub-XXXXXXXXXXXXXXXX with your Google Ad Manager / AdSense / Exchange Publisher ID:
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
