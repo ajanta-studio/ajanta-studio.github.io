@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-adsense-account" content="ca-pub-3532576239814430">
+  <title>About — Ajanta Studio</title>
+  <meta name="description" content="About Ajanta Studio, our mission to redefine procedural vector motion design, and our open developer ecosystem.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090e;
+      --bg-card: rgba(14, 19, 31, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --cyan: #00f0ff;
+      --violet: #8b5cf6;
+      --magenta: #ff007a;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Space Grotesk', -apple-system, sans-serif;
+      --body-font: 'Inter', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--body-font);
+      line-height: 1.7;
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 122, 0.08) 0%, transparent 50%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    nav { position: sticky; top: 16px; z-index: 100; margin-bottom: 60px; }
+    .nav-inner {
+      background: rgba(10, 14, 23, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .logo {
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-badge {
+      width: 12px; height: 12px;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      border-radius: 3px; transform: rotate(45deg);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .nav-links { display: flex; gap: 24px; font-size: 14px; font-weight: 500; }
+    .nav-link { color: var(--text-muted); transition: color 0.2s; }
+    .nav-link:hover, .nav-link.active { color: var(--text); }
+
+    .about-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      padding: 48px;
+      margin-bottom: 60px;
+    }
+    .about-card h1 {
+      font-family: var(--sans);
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #fff 40%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .about-card h2 {
+      font-family: var(--sans);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--cyan);
+      margin: 36px 0 16px;
+    }
+    .about-card p {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+    .badge-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 12px;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .badge-label { color: var(--cyan); margin-bottom: 4px; font-weight: 700; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      background: rgba(6, 8, 13, 0.9);
+      padding: 40px 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <div class="nav-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-badge"></div>
+          <span>Ajanta Studio</span>
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Overview</a>
+          <a href="docs.html" class="nav-link">Documentation</a>
+          <a href="about.html" class="nav-link active">About</a>
+          <a href="privacy.html" class="nav-link">Privacy</a>
+          <a href="player.html" class="nav-link">Ad Player</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="about-card">
+      <h1>About Ajanta Studio</h1>
+      <p>
+        Ajanta Studio is a creative software collective dedicated to building ultra-fast procedural vector design and motion synthesis tools. We believe vector design software should combine mathematical rigor with immediate tactile feedback.
+      </p>
+
+      <h2>Our Core Philosophy</h2>
+      <p>
+        Traditional vector tools treat curves as static drawing elements. Ajanta treats vector topology as living mathematical functions: parametric splines, harmonic oscillators, and procedural modifiers that can be deformed, animated, and shaded in real time.
+      </p>
+
+      <div class="badge-grid">
+        <div class="badge-item">
+          <div class="badge-label">TARGET PLATFORMS</div>
+          <div>macOS &bull; Windows &bull; Linux &bull; iPad &bull; Android</div>
+        </div>
+        <div class="badge-item">
+          <div class="badge-label">GRAPHICS KERNEL</div>
+          <div>GPU Impeller / Skia Shader Pipeline</div>
+        </div>
+        <div class="badge-item">
+          <div class="badge-label">INTERCHANGE</div>
+          <div>Native .aja &bull; SVG &bull; Lottie &bull; MP4</div>
+        </div>
+      </div>
+
+      <h2>Contact &amp; Support</h2>
+      <p>
+        For inquiries, partnerships, or technical bug reports, reach out to our team at:
+        <br>
+        <strong style="color: var(--cyan); font-family: var(--mono);">contact@ajanta.studio</strong>
+        <br>
+        Or visit our GitHub organization at <a href="https://github.com/ajanta-studio" target="_blank" style="color: var(--violet); text-decoration: underline;">github.com/ajanta-studio</a>.
+      </p>
+    </main>
+  </div>
+
+  <footer>
+    <div class="container">
+      &copy; 2026 Ajanta Studio. All rights reserved. &bull; <a href="privacy.html" style="color: var(--cyan);">Privacy Policy</a> &bull; <a href="terms.html" style="color: var(--cyan);">Terms</a>
+    </div>
+  </footer>
+</body>
+</html>

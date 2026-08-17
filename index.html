@@ -4,119 +4,691 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-adsense-account" content="ca-pub-3532576239814430">
-  <title>Ajanta Studio</title>
+  <title>Ajanta Studio — Procedural Vector Graphics & Motion Engine</title>
+  <meta name="description" content="Ajanta Studio is a next-generation procedural vector graphics and motion design application built for ultra-precise mathematical geometry, keyframe animation, and GPU shaders.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #07090e;
+      --bg-card: rgba(14, 19, 31, 0.75);
+      --bg-card-hover: rgba(20, 27, 45, 0.9);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(0, 240, 255, 0.25);
+      --cyan: #00f0ff;
+      --violet: #8b5cf6;
+      --magenta: #ff007a;
+      --emerald: #10b981;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Space Grotesk', -apple-system, sans-serif;
+      --body-font: 'Inter', sans-serif;
+    }
+
     * {
       box-sizing: border-box;
-    }
-    body {
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at 50% 30%, #1e293b 0%, #0b0f17 100%);
-      color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 24px;
     }
-    .card {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 48px;
-      border-radius: 20px;
-      max-width: 520px;
-      width: 100%;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--body-font);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(0, 240, 255, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(255, 0, 122, 0.06) 0%, transparent 50%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 16px;
+      z-index: 100;
+      margin-bottom: 40px;
+    }
+    .nav-inner {
+      background: rgba(10, 14, 23, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
     .logo {
-      font-size: 40px;
+      font-family: var(--sans);
       font-weight: 800;
-      letter-spacing: -1px;
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .tagline {
-      color: #94a3b8;
-      font-size: 16px;
-      margin-bottom: 32px;
-      line-height: 1.5;
+    .logo-badge {
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      border-radius: 3px;
+      transform: rotate(45deg);
+      box-shadow: 0 0 10px var(--cyan);
     }
-    .status-badge {
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text);
+    }
+    .btn-action {
+      background: linear-gradient(135deg, #00f0ff 0%, #7000ff 100%);
+      color: #fff;
+      font-family: var(--sans);
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+      transition: all 0.25s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-action:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 30px rgba(112, 0, 255, 0.6);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 60px 0 80px;
+      text-align: center;
+      position: relative;
+    }
+    .pill-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
-      padding: 8px 16px;
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 6px 14px;
       border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 500;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--cyan);
       margin-bottom: 24px;
+      letter-spacing: 0.5px;
     }
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background: #38bdf8;
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--cyan);
       border-radius: 50%;
-      box-shadow: 0 0 8px #38bdf8;
+      box-shadow: 0 0 8px var(--cyan);
+      animation: pulse 2s infinite;
     }
-    .links {
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    .hero-title {
+      font-family: var(--sans);
+      font-size: clamp(40px, 6vw, 76px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 30%, var(--cyan) 70%, var(--violet) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+    }
+
+    /* Interactive Vector Bézier Canvas Demo */
+    .interactive-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 24px;
+      margin: 0 auto 100px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+
+    .canvas-container {
+      width: 100%;
+      height: 380px;
+      position: relative;
+      background: #040609;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: crosshair;
+      overflow: hidden;
+    }
+    svg.bezier-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Grid layout */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 100px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0, 240, 255, 0.08);
+    }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--cyan);
+      font-size: 22px;
+    }
+    .feature-card.purple .feature-icon {
+      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.3);
+      color: var(--violet);
+    }
+    .feature-card.magenta .feature-icon {
+      background: rgba(255, 0, 122, 0.1);
+      border-color: rgba(255, 0, 122, 0.3);
+      color: var(--magenta);
+    }
+    .feature-title {
+      font-family: var(--sans);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .feature-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Motion Timeline Mockup */
+    .timeline-showcase {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 100px;
+    }
+    .section-tag {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: var(--sans);
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+    .timeline-mockup {
+      background: #05070c;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 30px;
+      font-family: var(--mono);
+    }
+    .timeline-track {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      gap: 16px;
+      font-size: 13px;
+    }
+    .track-name {
+      width: 140px;
+      color: var(--text-muted);
+    }
+    .track-bar {
+      flex: 1;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .keyframe-diamond {
+      width: 12px;
+      height: 12px;
+      background: var(--cyan);
+      transform: rotate(45deg);
+      position: absolute;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .keyframe-diamond.violet {
+      background: var(--violet);
+      box-shadow: 0 0 10px var(--violet);
+    }
+    .keyframe-diamond.magenta {
+      background: var(--magenta);
+      box-shadow: 0 0 10px var(--magenta);
+    }
+    .playhead {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #ff007a;
+      left: 45%;
+      box-shadow: 0 0 10px #ff007a;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      background: rgba(6, 8, 13, 0.9);
+      padding: 60px 0 40px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-logo {
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .footer-heading {
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .footer-links {
+      list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
-    .btn {
-      display: block;
-      padding: 12px 20px;
-      background: #1e293b;
-      color: #e2e8f0;
-      text-decoration: none;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
+    .footer-links a:hover {
+      color: var(--cyan);
     }
-    .btn:hover {
-      background: #334155;
-      border-color: #38bdf8;
-      color: #ffffff;
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
     }
-    footer {
-      margin-top: 32px;
-      font-size: 12px;
-      color: #64748b;
+
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+      .hero-title { font-size: 38px; }
+      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo">Ajanta Studio</div>
-    <div class="tagline">Creative Vector Tools &amp; Next-Generation Rendering</div>
 
-    <div class="status-badge">
-      <div class="pulse-dot"></div>
-      Ad &amp; Verification Services Online
+  <div class="container">
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-badge"></div>
+          <span>Ajanta Studio</span>
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link active">Overview</a>
+          <a href="docs.html" class="nav-link">Documentation</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="privacy.html" class="nav-link">Privacy</a>
+          <a href="player.html" class="nav-link">Ad Player</a>
+        </div>
+        <a href="docs.html" class="btn-action">Explore Docs</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="pill-tag">
+        <span class="pill-dot"></span>
+        <span>VERSION 2.4 HYPER-VECTOR ENGINE</span>
+      </div>
+      <h1 class="hero-title">
+        Procedural Vector Synthesis &amp; <br>
+        <span class="gradient-text">Precision Motion Dynamics</span>
+      </h1>
+      <p class="hero-desc">
+        Ajanta is an ultra-fast vector graphics and motion design application built for mathematical path modeling, GPU-accelerated shaders, and multi-track keyframe composition.
+      </p>
+    </section>
+
+    <!-- Interactive Canvas Card -->
+    <div class="interactive-card">
+      <div class="card-header">
+        <div class="window-dots">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <div>AJANTA_BEZIER_KERNEL // LIVE TOPOLOGY DEMO</div>
+        <div>[DRAG ANCHORS TO SHAPE]</div>
+      </div>
+      <div class="canvas-container" id="canvas-container">
+        <svg class="bezier-svg" id="bezier-svg">
+          <defs>
+            <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#00f0ff" />
+              <stop offset="50%" stop-color="#8b5cf6" />
+              <stop offset="100%" stop-color="#ff007a" />
+            </linearGradient>
+            <radialGradient id="glowGrad">
+              <stop offset="0%" stop-color="rgba(0,240,255,0.4)" />
+              <stop offset="100%" stop-color="transparent" />
+            </radialGradient>
+          </defs>
+          <!-- Tangent Lines -->
+          <line id="handle-line-1" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <line id="handle-line-2" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <!-- Spline -->
+          <path id="bezier-path" fill="none" stroke="url(#curveGrad)" stroke-width="4" stroke-linecap="round" />
+          <!-- Control Handles -->
+          <circle id="cp1" r="7" fill="#00f0ff" stroke="#fff" stroke-width="2" style="cursor: pointer;" />
+          <circle id="cp2" r="7" fill="#ff007a" stroke="#fff" stroke-width="2" style="cursor: pointer;" />
+          <!-- Anchor Points -->
+          <rect id="p0" width="12" height="12" fill="#fff" stroke="#00f0ff" stroke-width="2" style="cursor: pointer;" />
+          <rect id="p3" width="12" height="12" fill="#fff" stroke="#ff007a" stroke-width="2" style="cursor: pointer;" />
+        </svg>
+      </div>
     </div>
 
-    <div class="links">
-      <a href="player.html" class="btn">Test IMA Ad Player</a>
-      <a href="ads.txt" class="btn">View ads.txt</a>
-      <a href="app-ads.txt" class="btn">View app-ads.txt</a>
+    <!-- Core Features Grid -->
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">∿</div>
+        <h3 class="feature-title">Parametric Bézier Kernels</h3>
+        <p class="feature-desc">
+          High-order cubic and rational Bézier curves evaluated in real time. Continuous $C^0$, $C^1$, and $G^2$ curvature smoothing with non-destructive path offsets and stroke expansions.
+        </p>
+      </div>
+
+      <div class="feature-card purple">
+        <div class="feature-icon">❖</div>
+        <h3 class="feature-title">Ramanujan Mathematical Modifiers</h3>
+        <p class="feature-desc">
+          Procedural geometric modifiers driven by modular arithmetic, harmonic spirals, and Fourier series. Deform vector geometries with mathematical certainty and zero mesh distortion.
+        </p>
+      </div>
+
+      <div class="feature-card magenta">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">Real-Time GLSL Shaders</h3>
+        <p class="feature-desc">
+          Hardware-accelerated pixel fragment shaders and Skia Impeller pipelines. Apply dynamic lighting, chromatic dispersion, and procedural noise fields directly to vector paths at 120 FPS.
+        </p>
+      </div>
     </div>
+
+    <!-- Motion Timeline Showcase -->
+    <section class="timeline-showcase">
+      <div class="section-tag">Keyframe Interpolation Engine</div>
+      <h2 class="section-title">Ultra-Responsive Motion Graphs</h2>
+      <p style="color: var(--text-muted); max-width: 680px; font-size: 16px;">
+        Ajanta delivers velocity curve graphing, multi-point keyframing, and spatial motion path transformations. Export your motion designs seamlessly to SVG animation, Lottie, and high-bitrate video.
+      </p>
+
+      <div class="timeline-mockup">
+        <div class="timeline-track">
+          <div class="track-name">◆ Position.X / Y</div>
+          <div class="track-bar">
+            <div class="keyframe-diamond" style="left: 10%;"></div>
+            <div class="keyframe-diamond" style="left: 45%;"></div>
+            <div class="keyframe-diamond" style="left: 85%;"></div>
+            <div class="playhead"></div>
+          </div>
+        </div>
+        <div class="timeline-track">
+          <div class="track-name">◇ Curvature.G2</div>
+          <div class="track-bar">
+            <div class="keyframe-diamond violet" style="left: 20%;"></div>
+            <div class="keyframe-diamond violet" style="left: 70%;"></div>
+            <div class="playhead"></div>
+          </div>
+        </div>
+        <div class="timeline-track">
+          <div class="track-name">✦ Shader.Dispersion</div>
+          <div class="track-bar">
+            <div class="keyframe-diamond magenta" style="left: 15%;"></div>
+            <div class="keyframe-diamond magenta" style="left: 45%;"></div>
+            <div class="keyframe-diamond magenta" style="left: 90%;"></div>
+            <div class="playhead"></div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
+  <!-- Footer -->
   <footer>
-    &copy; 2026 Ajanta Studio. All rights reserved.
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo">Ajanta Studio</div>
+          <p style="font-size: 14px; max-width: 280px; margin-bottom: 16px;">
+            Next-generation procedural vector graphics and motion design software for Desktop and Tablet creators.
+          </p>
+          <div style="font-family: var(--mono); font-size: 12px; color: var(--cyan);">
+            ENGINE STATUS: ONLINE (HTTPS)
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-heading">Platform</div>
+          <ul class="footer-links">
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="about.html">About Studio</a></li>
+            <li><a href="player.html">Ad Player Service</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Developers</div>
+          <ul class="footer-links">
+            <li><a href="docs.html#api">Scripting API</a></li>
+            <li><a href="docs.html#shaders">GLSL Shaders</a></li>
+            <li><a href="docs.html#topology">Vector Kernel</a></li>
+            <li><a href="https://github.com/ajanta-studio" target="_blank">GitHub Org</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Legal &amp; Policy</div>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="ads.txt">ads.txt</a></li>
+            <li><a href="app-ads.txt">app-ads.txt</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 Ajanta Studio. All rights reserved.</div>
+        <div style="font-family: var(--mono); font-size: 12px;">DESIGNED FOR HIGH-PRECISION MOTION</div>
+      </div>
+    </div>
   </footer>
+
+  <script>
+    // Interactive Bézier Curve Handler
+    const p0 = { x: 80, y: 300 };
+    const cp1 = { x: 220, y: 60 };
+    const cp2 = { x: 620, y: 340 };
+    const p3 = { x: 760, y: 100 };
+
+    let activePoint = null;
+    const svg = document.getElementById('bezier-svg');
+    const pathEl = document.getElementById('bezier-path');
+    const l1 = document.getElementById('handle-line-1');
+    const l2 = document.getElementById('handle-line-2');
+    const elP0 = document.getElementById('p0');
+    const elCp1 = document.getElementById('cp1');
+    const elCp2 = document.getElementById('cp2');
+    const elP3 = document.getElementById('p3');
+
+    function updatePoints() {
+      const rect = svg.getBoundingClientRect();
+      const scaleX = rect.width / 840;
+      const scaleY = rect.height / 400;
+
+      pathEl.setAttribute('d', `M ${p0.x} ${p0.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${p3.x} ${p3.y}`);
+      
+      l1.setAttribute('x1', p0.x); l1.setAttribute('y1', p0.y);
+      l1.setAttribute('x2', cp1.x); l1.setAttribute('y2', cp1.y);
+
+      l2.setAttribute('x1', p3.x); l2.setAttribute('y1', p3.y);
+      l2.setAttribute('x2', cp2.x); l2.setAttribute('y2', cp2.y);
+
+      elP0.setAttribute('x', p0.x - 6); elP0.setAttribute('y', p0.y - 6);
+      elCp1.setAttribute('cx', cp1.x); elCp1.setAttribute('cy', cp1.y);
+      elCp2.setAttribute('cx', cp2.x); elCp2.setAttribute('cy', cp2.y);
+      elP3.setAttribute('x', p3.x - 6); elP3.setAttribute('y', p3.y - 6);
+    }
+
+    function initInteractive() {
+      const rect = svg.getBoundingClientRect();
+      p0.x = rect.width * 0.12; p0.y = rect.height * 0.75;
+      cp1.x = rect.width * 0.30; cp1.y = rect.height * 0.20;
+      cp2.x = rect.width * 0.70; cp2.y = rect.height * 0.85;
+      p3.x = rect.width * 0.88; p3.y = rect.height * 0.25;
+      updatePoints();
+    }
+
+    function getMousePos(evt) {
+      const CTM = svg.getScreenCTM();
+      return {
+        x: (evt.clientX - CTM.e) / CTM.a,
+        y: (evt.clientY - CTM.f) / CTM.d
+      };
+    }
+
+    elP0.addEventListener('mousedown', () => activePoint = p0);
+    elCp1.addEventListener('mousedown', () => activePoint = cp1);
+    elCp2.addEventListener('mousedown', () => activePoint = cp2);
+    elP3.addEventListener('mousedown', () => activePoint = p3);
+
+    window.addEventListener('mousemove', (e) => {
+      if (activePoint) {
+        const pos = getMousePos(e);
+        activePoint.x = pos.x;
+        activePoint.y = pos.y;
+        updatePoints();
+      }
+    });
+
+    window.addEventListener('mouseup', () => activePoint = null);
+    window.addEventListener('resize', initInteractive);
+    window.onload = initInteractive;
+  </script>
 </body>
 </html>
