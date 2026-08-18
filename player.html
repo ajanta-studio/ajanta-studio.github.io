@@ -32,6 +32,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
     #content-video {
       position: absolute;
@@ -55,8 +56,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 14px;
       z-index: 25;
+      pointer-events: none;
     }
     .spinner {
       width: 38px;
@@ -86,6 +89,7 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
+      pointer-events: auto;
       box-shadow: 0 4px 20px rgba(0, 240, 255, 0.35);
       transition: transform 0.15s ease, background 0.15s ease;
       z-index: 30;
@@ -125,7 +129,7 @@
     <div id="status-overlay">
       <div class="spinner" id="spinner"></div>
       <div class="status-text" id="status-text">Loading video ad...</div>
-      <button id="play-overlay-btn">▶ Play Sponsor Video</button>
+      <button id="play-overlay-btn">▶ Start Video Ad</button>
     </div>
     <video id="content-video" playsinline muted></video>
     <div id="ad-container"></div>
@@ -137,8 +141,9 @@
     let adsLoader;
     let adDisplayContainer;
     let isMuted = true;
-    let adContainerInitialized = false;
+    let adRequested = false;
 
+    const mainContainer = document.getElementById('main-container');
     const videoContent = document.getElementById('content-video');
     const adContainer = document.getElementById('ad-container');
     const statusOverlay = document.getElementById('status-overlay');
@@ -150,7 +155,7 @@
     // Cross-platform event dispatcher to Flutter (flutter_inappwebview)
     function notifyFlutter(eventName, data = {}) {
       const payload = { event: eventName, ...data };
-      console.log('[AjantaAdPlayer] Dispatching event:', payload);
+      console.log('[AjantaAdPlayer] Dispatching event:', JSON.stringify(payload));
 
       if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
         window.flutter_inappwebview.callHandler('onAdEvent', payload);
@@ -159,45 +164,68 @@
       }
     }
 
+    function getDimensions() {
+      const width = mainContainer.clientWidth || window.innerWidth || 800;
+      const height = mainContainer.clientHeight || window.innerHeight || 500;
+      return { width, height };
+    }
+
     function initPlayer() {
-      // Create ad display container
-      adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, videoContent);
+      console.log('[AjantaAdPlayer] Initializing Google IMA Player...');
 
-      // Create ads loader
-      adsLoader = new google.ima.AdsLoader(adDisplayContainer);
-      adsLoader.addEventListener(
-        google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-        onAdsManagerLoaded,
-        false
-      );
-      adsLoader.addEventListener(
-        google.ima.AdErrorEvent.Type.AD_ERROR,
-        onAdError,
-        false
-      );
+      if (typeof google === 'undefined' || !google.ima) {
+        console.error('[AjantaAdPlayer] Google IMA SDK failed to load (possible ad blocker or network issue).');
+        onAdError({ getError: () => 'Google IMA SDK could not be loaded. Please disable ad-blockers or check your connection.' });
+        return;
+      }
 
-      // Extract adTag from URL query parameter, fallback to Google sample VAST linear tag
-      const urlParams = new URLSearchParams(window.location.search);
-      const adTagUrl = urlParams.get('adTag') ||
-        'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=' + Date.now();
+      try {
+        // Create ad display container
+        adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, videoContent);
 
-      requestAds(adTagUrl);
+        // Create ads loader
+        adsLoader = new google.ima.AdsLoader(adDisplayContainer);
+        adsLoader.addEventListener(
+          google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+          onAdsManagerLoaded,
+          false
+        );
+        adsLoader.addEventListener(
+          google.ima.AdErrorEvent.Type.AD_ERROR,
+          onAdError,
+          false
+        );
+
+        // Extract adTag from URL query parameter, fallback to Google sample VAST linear tag
+        const urlParams = new URLSearchParams(window.location.search);
+        const adTagUrl = urlParams.get('adTag') ||
+          'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=' + Date.now();
+
+        console.log('[AjantaAdPlayer] Requesting ads with tag:', adTagUrl);
+        requestAds(adTagUrl);
+      } catch (err) {
+        console.error('[AjantaAdPlayer] Init error:', err);
+        onAdError(err);
+      }
     }
 
     function requestAds(adTagUrl) {
+      if (adRequested) return;
+      adRequested = true;
+
       try {
         adDisplayContainer.initialize();
-        adContainerInitialized = true;
       } catch (e) {
-        console.warn('AdDisplayContainer init deferred:', e);
+        console.warn('[AjantaAdPlayer] Pre-init adDisplayContainer warning:', e);
       }
 
+      const dims = getDimensions();
       const adsRequest = new google.ima.AdsRequest();
       adsRequest.adTagUrl = adTagUrl;
-      adsRequest.linearAdSlotWidth = window.innerWidth;
-      adsRequest.linearAdSlotHeight = window.innerHeight;
-      adsRequest.nonLinearAdSlotWidth = window.innerWidth;
-      adsRequest.nonLinearAdSlotHeight = window.innerHeight;
+      adsRequest.linearAdSlotWidth = dims.width;
+      adsRequest.linearAdSlotHeight = dims.height;
+      adsRequest.nonLinearAdSlotWidth = dims.width;
+      adsRequest.nonLinearAdSlotHeight = dims.height;
 
       // Enable Autoplay and start Muted to pass browser autoplay policies
       adsRequest.setAdWillAutoPlay(true);
@@ -207,6 +235,8 @@
     }
 
     function onAdsManagerLoaded(adsManagerLoadedEvent) {
+      console.log('[AjantaAdPlayer] AdsManager loaded successfully.');
+
       const adsRenderingSettings = new google.ima.AdsRenderingSettings();
       adsRenderingSettings.restoreCustomPlaybackStateOnFocus = true;
       adsRenderingSettings.autoPlayAdBreaks = true;
@@ -218,6 +248,7 @@
 
       // Lifecycle events
       adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, (e) => {
+        console.log('[AjantaAdPlayer] Ad STARTED');
         if (statusOverlay) statusOverlay.style.display = 'none';
         if (audioToggleBtn) audioToggleBtn.style.display = 'flex';
         updateAudioButton();
@@ -231,23 +262,28 @@
       });
 
       adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
+        console.log('[AjantaAdPlayer] Ad PAUSED');
         notifyFlutter('PAUSED');
       });
 
       adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
+        console.log('[AjantaAdPlayer] Ad RESUMED');
         notifyFlutter('RESUMED');
       });
 
       adsManager.addEventListener(google.ima.AdEvent.Type.SKIPPED, () => {
+        console.log('[AjantaAdPlayer] Ad SKIPPED');
         if (audioToggleBtn) audioToggleBtn.style.display = 'none';
         notifyFlutter('SKIPPED');
       });
 
       adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
+        console.log('[AjantaAdPlayer] Ad COMPLETE');
         notifyFlutter('COMPLETED');
       });
 
       adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, () => {
+        console.log('[AjantaAdPlayer] Ad ALL_ADS_COMPLETED');
         if (audioToggleBtn) audioToggleBtn.style.display = 'none';
         notifyFlutter('ALL_ADS_COMPLETED');
       });
@@ -260,23 +296,28 @@
       });
 
       try {
-        adsManager.init(window.innerWidth, window.innerHeight, google.ima.ViewMode.NORMAL);
-        adsManager.setVolume(0); // Start muted for instant autoplay without user gesture
+        const dims = getDimensions();
+        adDisplayContainer.initialize();
+        adsManager.init(dims.width, dims.height, google.ima.ViewMode.NORMAL);
+        adsManager.setVolume(0); // Start muted for instant autoplay
         isMuted = true;
         adsManager.start();
+        console.log('[AjantaAdPlayer] AdsManager started with dims:', dims);
       } catch (adError) {
+        console.error('[AjantaAdPlayer] Start error:', adError);
         onAdError(adError);
       }
     }
 
     function onAdError(adErrorEvent) {
       const errorStr = adErrorEvent.getError ? adErrorEvent.getError().toString() : String(adErrorEvent);
-      console.warn('[AjantaAdPlayer] Ad error:', errorStr);
+      console.warn('[AjantaAdPlayer] onAdError event:', errorStr);
 
       // If autoplay was blocked because of user interaction (AdError 1205), show the play button
       if (errorStr.includes('1205') || errorStr.includes('user interaction')) {
+        console.log('[AjantaAdPlayer] Showing play overlay button for user interaction.');
         if (spinner) spinner.style.display = 'none';
-        if (statusText) statusText.innerText = 'Click to start sponsor ad:';
+        if (statusText) statusText.innerText = 'Click below to begin sponsor ad:';
         if (playOverlayBtn) {
           playOverlayBtn.style.display = 'inline-flex';
           playOverlayBtn.onclick = () => {
@@ -291,7 +332,7 @@
                 adsManager.start();
               }
             } catch (e) {
-              console.error('Play click failed:', e);
+              console.error('[AjantaAdPlayer] Play button click failed:', e);
               notifyFlutter('ERROR', { error: String(e) });
             }
           };
@@ -300,7 +341,7 @@
       }
 
       if (adsManager) {
-        adsManager.destroy();
+        try { adsManager.destroy(); } catch (e) {}
       }
       if (spinner) spinner.style.display = 'none';
       if (statusOverlay) statusOverlay.style.display = 'flex';
@@ -330,7 +371,15 @@
 
     window.addEventListener('resize', () => {
       if (adsManager) {
-        adsManager.resize(window.innerWidth, window.innerHeight, google.ima.ViewMode.NORMAL);
+        const dims = getDimensions();
+        adsManager.resize(dims.width, dims.height, google.ima.ViewMode.NORMAL);
+      }
+    });
+
+    // Support clicking anywhere on container to trigger play if blocked
+    mainContainer.addEventListener('click', (e) => {
+      if (playOverlayBtn && playOverlayBtn.style.display === 'inline-flex' && e.target !== playOverlayBtn) {
+        playOverlayBtn.click();
       }
     });
 
