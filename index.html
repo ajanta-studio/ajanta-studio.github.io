@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-adsense-account" content="ca-pub-3532576239814430">
-  <title>Ajanta Studio — Procedural Vector Graphics & Motion Engine</title>
-  <meta name="description" content="Ajanta Studio is a next-generation procedural vector graphics and motion design application built for ultra-precise mathematical geometry, keyframe animation, and GPU shaders.">
+  <title>Ajanta Studio — Procedural Vector & Motion Design Suite</title>
+  <meta name="description" content="Ajanta Studio is a next-generation vector design and animation suite featuring intuitive marionette string bone rigging, fully non-destructive animatable recipes, freeform gradient fills, procedural properties, and GPU material shaders.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -20,6 +20,7 @@
       --violet: #8b5cf6;
       --magenta: #ff007a;
       --emerald: #10b981;
+      --amber: #f59e0b;
       --text: #f1f5f9;
       --text-muted: #94a3b8;
       --mono: 'JetBrains Mono', monospace;
@@ -53,7 +54,6 @@
       text-decoration: none;
     }
 
-    /* Container */
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -163,9 +163,9 @@
     }
     .hero-title {
       font-family: var(--sans);
-      font-size: clamp(40px, 6vw, 76px);
+      font-size: clamp(38px, 5.5vw, 72px);
       font-weight: 800;
-      line-height: 1.05;
+      line-height: 1.08;
       letter-spacing: -2px;
       margin-bottom: 20px;
     }
@@ -177,12 +177,12 @@
     .hero-desc {
       font-size: clamp(16px, 2vw, 20px);
       color: var(--text-muted);
-      max-width: 720px;
+      max-width: 760px;
       margin: 0 auto 40px;
       font-weight: 400;
     }
 
-    /* Interactive Vector Bézier Canvas Demo */
+    /* Interactive Canvas Card */
     .interactive-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -238,7 +238,7 @@
     /* Grid layout */
     .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 24px;
       margin-bottom: 100px;
     }
@@ -280,9 +280,19 @@
       border-color: rgba(255, 0, 122, 0.3);
       color: var(--magenta);
     }
+    .feature-card.amber .feature-icon {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: var(--amber);
+    }
+    .feature-card.emerald .feature-icon {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: var(--emerald);
+    }
     .feature-title {
       font-family: var(--sans);
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 700;
       margin-bottom: 12px;
       letter-spacing: -0.5px;
@@ -293,7 +303,7 @@
       line-height: 1.6;
     }
 
-    /* Motion Timeline Mockup */
+    /* Motion Timeline Showcase */
     .timeline-showcase {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -333,8 +343,11 @@
       font-size: 13px;
     }
     .track-name {
-      width: 140px;
+      width: 200px;
       color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .track-bar {
       flex: 1;
@@ -360,6 +373,10 @@
     .keyframe-diamond.magenta {
       background: var(--magenta);
       box-shadow: 0 0 10px var(--magenta);
+    }
+    .keyframe-diamond.amber {
+      background: var(--amber);
+      box-shadow: 0 0 10px var(--amber);
     }
     .playhead {
       position: absolute;
@@ -451,14 +468,14 @@
     <section class="hero">
       <div class="pill-tag">
         <span class="pill-dot"></span>
-        <span>VERSION 2.4 HYPER-VECTOR ENGINE</span>
+        <span>NEXT-GEN PROCEDURAL MOTION ENGINE</span>
       </div>
       <h1 class="hero-title">
-        Procedural Vector Synthesis &amp; <br>
-        <span class="gradient-text">Precision Motion Dynamics</span>
+        Intuitive Marionette Rigging &amp; <br>
+        <span class="gradient-text">Animatable Procedural Recipes</span>
       </h1>
       <p class="hero-desc">
-        Ajanta is an ultra-fast vector graphics and motion design application built for mathematical path modeling, GPU-accelerated shaders, and multi-track keyframe composition.
+        Ajanta brings marionette strings-based bone animation, fully non-destructive and keyframe-animatable recipes, organic freeform gradient fills, procedural properties, and real-time GPU material shaders to vector creators.
       </p>
     </section>
 
@@ -470,8 +487,8 @@
           <div class="dot yellow"></div>
           <div class="dot green"></div>
         </div>
-        <div>AJANTA_BEZIER_KERNEL // LIVE TOPOLOGY DEMO</div>
-        <div>[DRAG ANCHORS TO SHAPE]</div>
+        <div>AJANTA_MARIONETTE_KERNEL // LIVE BONE &amp; SPLINE RIG</div>
+        <div>[DRAG STRINGS &amp; ANCHORS]</div>
       </div>
       <div class="canvas-container" id="canvas-container">
         <svg class="bezier-svg" id="bezier-svg">
@@ -481,64 +498,90 @@
               <stop offset="50%" stop-color="#8b5cf6" />
               <stop offset="100%" stop-color="#ff007a" />
             </linearGradient>
-            <radialGradient id="glowGrad">
-              <stop offset="0%" stop-color="rgba(0,240,255,0.4)" />
-              <stop offset="100%" stop-color="transparent" />
-            </radialGradient>
           </defs>
-          <!-- Tangent Lines -->
-          <line id="handle-line-1" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4 4" />
-          <line id="handle-line-2" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <!-- Marionette String Lines -->
+          <line id="handle-line-1" stroke="rgba(0,240,255,0.4)" stroke-width="1.5" stroke-dasharray="4 4" />
+          <line id="handle-line-2" stroke="rgba(255,0,122,0.4)" stroke-width="1.5" stroke-dasharray="4 4" />
           <!-- Spline -->
           <path id="bezier-path" fill="none" stroke="url(#curveGrad)" stroke-width="4" stroke-linecap="round" />
-          <!-- Control Handles -->
-          <circle id="cp1" r="7" fill="#00f0ff" stroke="#fff" stroke-width="2" style="cursor: pointer;" />
-          <circle id="cp2" r="7" fill="#ff007a" stroke="#fff" stroke-width="2" style="cursor: pointer;" />
-          <!-- Anchor Points -->
-          <rect id="p0" width="12" height="12" fill="#fff" stroke="#00f0ff" stroke-width="2" style="cursor: pointer;" />
-          <rect id="p3" width="12" height="12" fill="#fff" stroke="#ff007a" stroke-width="2" style="cursor: pointer;" />
+          <!-- Marionette Control Handles -->
+          <circle id="cp1" r="8" fill="#00f0ff" stroke="#fff" stroke-width="2" style="cursor: pointer;" />
+          <circle id="cp2" r="8" fill="#ff007a" stroke="#fff" stroke-width="2" style="cursor: pointer;" />
+          <!-- Bone Root Anchors -->
+          <rect id="p0" width="14" height="14" fill="#fff" stroke="#00f0ff" stroke-width="2" style="cursor: pointer;" />
+          <rect id="p3" width="14" height="14" fill="#fff" stroke="#ff007a" stroke-width="2" style="cursor: pointer;" />
         </svg>
       </div>
     </div>
 
     <!-- Core Features Grid -->
     <div class="grid-3">
+      <!-- 1. Marionette Strings Animation -->
+      <div class="feature-card">
+        <div class="feature-icon">⛓</div>
+        <h3 class="feature-title">Marionette Strings Bone Rigging</h3>
+        <p class="feature-desc">
+          An intuitive, tactile approach to 2D skeletal animation. Attach marionette strings to vector anchor clusters and puppet bones, enabling fluid inverse kinematics and lifelike character motion with zero tedious manual point keyframing.
+        </p>
+      </div>
+
+      <!-- 2. Non-Destructive Animatable Recipes -->
+      <div class="feature-card purple">
+        <div class="feature-icon">⚙</div>
+        <h3 class="feature-title">Fully Non-Destructive, Animatable Recipes</h3>
+        <p class="feature-desc">
+          A parametric recipe stack where every Boolean operation, contour offset, bevel, and path deformation remains 100% non-destructive, re-orderable, and directly keyframeable across the timeline for evolving vector shapes.
+        </p>
+      </div>
+
+      <!-- 3. Freeform Gradient Fill -->
+      <div class="feature-card magenta">
+        <div class="feature-icon">🎨</div>
+        <h3 class="feature-title">Freeform Gradient Fills</h3>
+        <p class="feature-desc">
+          Place multi-point gradient stops freely inside complex vector paths. The continuous mesh-interpolation engine smoothly blends colors, opacities, and chromatic transitions across any geometric contour in real time.
+        </p>
+      </div>
+
+      <!-- 4. Procedural Properties -->
+      <div class="feature-card amber">
+        <div class="feature-icon">✦</div>
+        <h3 class="feature-title">Procedural Properties</h3>
+        <p class="feature-desc">
+          Drive any vector attribute—stroke thickness, corner radius, dash offsets, or opacity—using mathematical expressions, harmonic oscillators, and parametric controllers for generative, responsive design.
+        </p>
+      </div>
+
+      <!-- 5. Procedural Material Shaders -->
+      <div class="feature-card emerald">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">Procedural Material Shaders</h3>
+        <p class="feature-desc">
+          Apply real-time GPU fragment shaders directly to vector fills and strokes. Render dynamic metallic reflections, physical glass refractions, iridescence, and procedural noise fields running at 120 FPS.
+        </p>
+      </div>
+
+      <!-- 6. Motion Timeline -->
       <div class="feature-card">
         <div class="feature-icon">∿</div>
-        <h3 class="feature-title">Parametric Bézier Kernels</h3>
+        <h3 class="feature-title">Multi-Track Motion Timeline</h3>
         <p class="feature-desc">
-          High-order cubic and rational Bézier curves evaluated in real time. Continuous $C^0$, $C^1$, and $G^2$ curvature smoothing with non-destructive path offsets and stroke expansions.
-        </p>
-      </div>
-
-      <div class="feature-card purple">
-        <div class="feature-icon">❖</div>
-        <h3 class="feature-title">Ramanujan Mathematical Modifiers</h3>
-        <p class="feature-desc">
-          Procedural geometric modifiers driven by modular arithmetic, harmonic spirals, and Fourier series. Deform vector geometries with mathematical certainty and zero mesh distortion.
-        </p>
-      </div>
-
-      <div class="feature-card magenta">
-        <div class="feature-icon">⚡</div>
-        <h3 class="feature-title">Real-Time GLSL Shaders</h3>
-        <p class="feature-desc">
-          Hardware-accelerated pixel fragment shaders and Skia Impeller pipelines. Apply dynamic lighting, chromatic dispersion, and procedural noise fields directly to vector paths at 120 FPS.
+          Ultra-responsive keyframing with integrated velocity graphs, spatial motion paths, and custom cubic-bezier easing curves. Export animations to SVG, Lottie, and high-framerate video formats seamlessly.
         </p>
       </div>
     </div>
 
     <!-- Motion Timeline Showcase -->
     <section class="timeline-showcase">
-      <div class="section-tag">Keyframe Interpolation Engine</div>
-      <h2 class="section-title">Ultra-Responsive Motion Graphs</h2>
+      <div class="section-tag">Keyframe &amp; Recipe Graph Engine</div>
+      <h2 class="section-title">Animate Any Recipe Parameter Live</h2>
       <p style="color: var(--text-muted); max-width: 680px; font-size: 16px;">
-        Ajanta delivers velocity curve graphing, multi-point keyframing, and spatial motion path transformations. Export your motion designs seamlessly to SVG animation, Lottie, and high-bitrate video.
+        In Ajanta, recipes aren't static filters—they are living motion nodes. Keyframe a contour bevel, oscillate a marionette bone string, or animate a procedural shader uniform with pinpoint velocity curve controls.
       </p>
 
       <div class="timeline-mockup">
         <div class="timeline-track">
-          <div class="track-name">◆ Position.X / Y</div>
+          <div class="track-name">◆ Marionette.Bone.Root</div>
           <div class="track-bar">
             <div class="keyframe-diamond" style="left: 10%;"></div>
             <div class="keyframe-diamond" style="left: 45%;"></div>
@@ -547,7 +590,7 @@
           </div>
         </div>
         <div class="timeline-track">
-          <div class="track-name">◇ Curvature.G2</div>
+          <div class="track-name">◇ Recipe.Offset.Radius</div>
           <div class="track-bar">
             <div class="keyframe-diamond violet" style="left: 20%;"></div>
             <div class="keyframe-diamond violet" style="left: 70%;"></div>
@@ -555,11 +598,19 @@
           </div>
         </div>
         <div class="timeline-track">
-          <div class="track-name">✦ Shader.Dispersion</div>
+          <div class="track-name">✦ Freeform.Gradient.Mesh</div>
           <div class="track-bar">
             <div class="keyframe-diamond magenta" style="left: 15%;"></div>
             <div class="keyframe-diamond magenta" style="left: 45%;"></div>
             <div class="keyframe-diamond magenta" style="left: 90%;"></div>
+            <div class="playhead"></div>
+          </div>
+        </div>
+        <div class="timeline-track">
+          <div class="track-name">❖ Material.Shader.Roughness</div>
+          <div class="track-bar">
+            <div class="keyframe-diamond amber" style="left: 30%;"></div>
+            <div class="keyframe-diamond amber" style="left: 60%;"></div>
             <div class="playhead"></div>
           </div>
         </div>
@@ -574,7 +625,7 @@
         <div>
           <div class="footer-logo">Ajanta Studio</div>
           <p style="font-size: 14px; max-width: 280px; margin-bottom: 16px;">
-            Next-generation procedural vector graphics and motion design software for Desktop and Tablet creators.
+            Next-generation procedural vector graphics and motion design software featuring marionette bone rigging and animatable recipes.
           </p>
           <div style="font-family: var(--mono); font-size: 12px; color: var(--cyan);">
             ENGINE STATUS: ONLINE (HTTPS)
@@ -592,12 +643,12 @@
         </div>
 
         <div>
-          <div class="footer-heading">Developers</div>
+          <div class="footer-heading">Features</div>
           <ul class="footer-links">
-            <li><a href="docs.html#api">Scripting API</a></li>
-            <li><a href="docs.html#shaders">GLSL Shaders</a></li>
-            <li><a href="docs.html#topology">Vector Kernel</a></li>
-            <li><a href="https://github.com/ajanta-studio" target="_blank">GitHub Org</a></li>
+            <li><a href="docs.html#marionette">Marionette Rigging</a></li>
+            <li><a href="docs.html#recipes">Animatable Recipes</a></li>
+            <li><a href="docs.html#gradients">Freeform Gradients</a></li>
+            <li><a href="docs.html#shaders">Material Shaders</a></li>
           </ul>
         </div>
 
@@ -620,7 +671,7 @@
   </footer>
 
   <script>
-    // Interactive Bézier Curve Handler
+    // Interactive Marionette Rigging / Bézier Curve Handler
     const p0 = { x: 80, y: 300 };
     const cp1 = { x: 220, y: 60 };
     const cp2 = { x: 620, y: 340 };
@@ -637,10 +688,6 @@
     const elP3 = document.getElementById('p3');
 
     function updatePoints() {
-      const rect = svg.getBoundingClientRect();
-      const scaleX = rect.width / 840;
-      const scaleY = rect.height / 400;
-
       pathEl.setAttribute('d', `M ${p0.x} ${p0.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${p3.x} ${p3.y}`);
       
       l1.setAttribute('x1', p0.x); l1.setAttribute('y1', p0.y);
@@ -649,10 +696,10 @@
       l2.setAttribute('x1', p3.x); l2.setAttribute('y1', p3.y);
       l2.setAttribute('x2', cp2.x); l2.setAttribute('y2', cp2.y);
 
-      elP0.setAttribute('x', p0.x - 6); elP0.setAttribute('y', p0.y - 6);
+      elP0.setAttribute('x', p0.x - 7); elP0.setAttribute('y', p0.y - 7);
       elCp1.setAttribute('cx', cp1.x); elCp1.setAttribute('cy', cp1.y);
       elCp2.setAttribute('cx', cp2.x); elCp2.setAttribute('cy', cp2.y);
-      elP3.setAttribute('x', p3.x - 6); elP3.setAttribute('y', p3.y - 6);
+      elP3.setAttribute('x', p3.x - 7); elP3.setAttribute('y', p3.y - 7);
     }
 
     function initInteractive() {

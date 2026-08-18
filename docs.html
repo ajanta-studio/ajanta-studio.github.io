@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-adsense-account" content="ca-pub-3532576239814430">
-  <title>Documentation — Ajanta Studio Vector Engine</title>
-  <meta name="description" content="Technical documentation and mathematical specifications for the Ajanta procedural vector graphics kernel and motion timeline.">
+  <title>Documentation — Ajanta Studio Vector &amp; Motion Engine</title>
+  <meta name="description" content="Technical documentation for Ajanta Studio: Marionette strings-based bone animation, fully non-destructive and animatable recipes, freeform gradient fills, procedural properties, and GPU material shaders.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -14,10 +14,11 @@
       --bg: #07090e;
       --bg-card: rgba(14, 19, 31, 0.75);
       --border: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(0, 240, 255, 0.25);
       --cyan: #00f0ff;
       --violet: #8b5cf6;
       --magenta: #ff007a;
+      --amber: #f59e0b;
+      --emerald: #10b981;
       --text: #f1f5f9;
       --text-muted: #94a3b8;
       --mono: 'JetBrains Mono', monospace;
@@ -75,7 +76,7 @@
     /* Docs Layout */
     .docs-layout {
       display: grid;
-      grid-template-columns: 260px 1fr;
+      grid-template-columns: 280px 1fr;
       gap: 48px;
       padding: 40px 0 100px;
     }
@@ -99,13 +100,13 @@
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
     .sidebar-list a {
       color: var(--text-muted);
       transition: all 0.2s;
       display: block;
-      padding: 6px 12px;
+      padding: 8px 12px;
       border-radius: 6px;
     }
     .sidebar-list a:hover {
@@ -134,17 +135,10 @@
       font-size: 26px;
       font-weight: 700;
       letter-spacing: -0.5px;
-      margin: 40px 0 16px;
+      margin: 44px 0 16px;
       color: var(--cyan);
       border-bottom: 1px solid var(--border);
       padding-bottom: 8px;
-    }
-    .docs-content h3 {
-      font-family: var(--sans);
-      font-size: 20px;
-      font-weight: 600;
-      margin: 24px 0 12px;
-      color: var(--text);
     }
     .docs-content p {
       color: var(--text-muted);
@@ -163,15 +157,20 @@
       margin: 20px 0;
       line-height: 1.5;
     }
-    .math-callout {
-      background: rgba(139, 92, 246, 0.08);
-      border: 1px solid rgba(139, 92, 246, 0.25);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 24px 0;
+    .feature-badge-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .badge {
       font-family: var(--mono);
-      font-size: 14px;
-      color: #c4b5fd;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
     }
 
     footer {
@@ -207,75 +206,105 @@
 
     <div class="docs-layout">
       <aside class="sidebar">
-        <div class="sidebar-title">Core Systems</div>
+        <div class="sidebar-title">Ajanta Architecture</div>
         <ul class="sidebar-list">
-          <li><a href="#topology">Vector Topology</a></li>
-          <li><a href="#bezier">Bézier Mathematics</a></li>
-          <li><a href="#ramanujan">Ramanujan Modifiers</a></li>
-          <li><a href="#keyframing">Motion Timeline</a></li>
-          <li><a href="#shaders">GLSL Shaders</a></li>
-          <li><a href="#api">Scripting API</a></li>
+          <li><a href="#marionette">Marionette Rigging</a></li>
+          <li><a href="#recipes">Animatable Recipes</a></li>
+          <li><a href="#gradients">Freeform Gradients</a></li>
+          <li><a href="#procedural">Procedural Properties</a></li>
+          <li><a href="#shaders">Material Shaders</a></li>
+          <li><a href="#timeline">Motion Timeline</a></li>
         </ul>
       </aside>
 
       <main class="docs-content">
         <h1>Ajanta Engine Documentation</h1>
         <p>
-          Ajanta Studio is engineered for high-performance procedural vector graphics and dynamic motion synthesis. Below is the technical specification of the underlying geometry pipeline, spline evaluation algorithms, and motion keyframe engine.
+          Ajanta Studio is engineered for high-performance procedural vector graphics, tactile skeletal animation, and non-destructive motion composition. Below are the technical specifications for Ajanta's core feature pipelines.
         </p>
 
-        <h2 id="topology">1. Vector Topology &amp; Path Architecture</h2>
-        <p>
-          Vector paths in Ajanta are represented as directed acyclic geometry graphs consisting of anchor nodes ($P_0, P_n$) and control tangent vectors ($C_1, C_2$). Paths support non-destructive boolean operations (Union, Intersection, Difference, XOR) computed with exact arithmetic precision.
-        </p>
-        <p>
-          The engine maintains continuity across connected segments, guaranteeing smooth transitions under high magnification without raster aliasing.
-        </p>
-
-        <h2 id="bezier">2. Parametric Bézier Splines</h2>
-        <p>
-          Cubic Bézier curves are evaluated using Bernstein polynomials across normalized time $t \in [0, 1]$:
-        </p>
-        <div class="math-callout">
-          B(t) = (1-t)³P₀ + 3(1-t)²t P₁ + 3(1-t)t² P₂ + t³ P₃
+        <!-- 1. Marionette Strings -->
+        <h2 id="marionette">1. Easy / Intuitive Marionette Strings Bone Animation</h2>
+        <div class="feature-badge-row">
+          <span class="badge">Skeletal Rigging</span>
+          <span class="badge">Puppet Physics</span>
+          <span class="badge">Inverse Kinematics</span>
         </div>
         <p>
-          Ajanta's curve engine calculates exact arc lengths using Gaussian quadrature numerical integration, ensuring uniform velocity during path-following animation.
+          Ajanta introduces a natural, strings-based puppet rigging system. Instead of complex, rigid weight-painting pipelines, users attach intuitive Marionette Strings between puppet bones and vector anchor point clusters.
+        </p>
+        <p>
+          Manipulating a marionette control handle propagates smooth, continuous inverse kinematics through the connected spline segments, enabling expressive character animations and organic deformations without vertex pinching or mesh distortion.
         </p>
 
-        <h2 id="ramanujan">3. Ramanujan Mathematical Modifiers</h2>
+        <!-- 2. Non-Destructive Recipes -->
+        <h2 id="recipes">2. Fully Non-Destructive, Fully Animatable Recipes</h2>
+        <div class="feature-badge-row">
+          <span class="badge">Parametric Node Stack</span>
+          <span class="badge">Live Evaluation</span>
+          <span class="badge">Timeline Keyframeable</span>
+        </div>
         <p>
-          The modifier stack allows artists to apply non-destructive procedural deformations to standard paths:
+          All operations in Ajanta—Boolean operations, contour offsets, chamfers, bevels, stroke expansions, and transformations—are encapsulated in a procedural <strong>Recipe Stack</strong>.
         </p>
-        <ul style="margin-left: 24px; color: var(--text-muted); margin-bottom: 20px;">
-          <li><strong>Harmonic Oscillator:</strong> Applies sine-wave frequency modulations along the path normal vector.</li>
-          <li><strong>Logarithmic Spiral:</strong> Wraps linear splines into equiangular spirals with customizable golden ratio exponents.</li>
-          <li><strong>Modular Sieve:</strong> Subdivides and segments paths based on modular arithmetic intervals.</li>
-        </ul>
-
-        <h2 id="keyframing">4. Motion Timeline &amp; Keyframe Interpolation</h2>
         <p>
-          The motion engine supports multi-track keyframing with customizable cubic-bezier easing curves ($x_1, y_1, x_2, y_2$). Spatial motion paths can be edited directly on the canvas with interactive tangent handles.
+          Recipes never bake or flatten vector geometry. Crucially, <strong>every parameter within a recipe is fully animatable over time</strong>. You can keyframe the radius of an offset contour, modulate a boolean cut threshold, or transition non-destructive bevel angles dynamically across the timeline.
         </p>
         <div class="code-block">
-// Sample Keyframe Definition (.aja)
+// Sample Animatable Recipe Block (.aja)
 {
-  "property": "path.curvature.g2",
-  "keyframes": [
-    { "time_ms": 0, "value": 0.0, "easing": "ease-in-out" },
-    { "time_ms": 1200, "value": 1.45, "easing": [0.42, 0.0, 0.58, 1.0] }
-  ]
+  "recipe": "ContourOffset",
+  "enabled": true,
+  "params": {
+    "radius": {
+      "type": "animated_scalar",
+      "keyframes": [
+        { "time": 0.0, "value": 2.0 },
+        { "time": 1.5, "value": 18.5, "easing": "cubic(0.2, 0.8, 0.2, 1.0)" }
+      ]
+    },
+    "join_type": "round"
+  }
 }
         </div>
 
-        <h2 id="shaders">5. GPU Fragment Shaders</h2>
+        <!-- 3. Freeform Gradient Fill -->
+        <h2 id="gradients">3. Freeform Gradient Fills</h2>
+        <div class="feature-badge-row">
+          <span class="badge">Mesh Interpolation</span>
+          <span class="badge">Organic Shading</span>
+          <span class="badge">Multi-Point Stops</span>
+        </div>
         <p>
-          Ajanta compiles GLSL fragment shaders directly to Skia / Impeller pipeline shaders. Shaders operate in floating-point linear color space (RGBA16F / RGBA32F) for HDR-ready glow and dispersion effects.
+          Ajanta's Freeform Gradient Fill engine allows creators to drop arbitrary color stops anywhere within a 2D vector path. The renderer constructs a dynamic Delaunay triangulation mesh across the geometry, evaluating harmonic coordinates to produce silky, photorealistic gradient blends that adapt in real time as the path deforms.
         </p>
 
-        <h2 id="api">6. Scripting API</h2>
+        <!-- 4. Procedural Properties -->
+        <h2 id="procedural">4. Procedural Properties</h2>
+        <div class="feature-badge-row">
+          <span class="badge">Math Expressions</span>
+          <span class="badge">Harmonic Oscillators</span>
+          <span class="badge">Generative Controllers</span>
+        </div>
         <p>
-          Extend Ajanta's core functionality using the embedded Dart / Python scripting engine. Automate batch asset exports, procedural path generators, and parametric typography layouts.
+          Drive any vector property dynamically using mathematical expressions, modular controllers, and harmonic oscillators. Procedural properties can be linked across multiple layers—enabling procedural dash patterns, pulsing scales, or rotational arrays driven by unified mathematical variables.
+        </p>
+
+        <!-- 5. Material Shaders -->
+        <h2 id="shaders">5. Procedural Material Shaders</h2>
+        <div class="feature-badge-row">
+          <span class="badge">GPU Skia / Impeller</span>
+          <span class="badge">Fragment GLSL</span>
+          <span class="badge">HDR Lighting &amp; Noise</span>
+        </div>
+        <p>
+          Ajanta embeds custom GPU pixel shaders directly into vector fills and strokes. Render physically plausible materials such as brushed aluminum, iridescent glass, refractive lenses, and procedural Voronoi textures with 120 FPS hardware acceleration.
+        </p>
+
+        <!-- 6. Motion Timeline -->
+        <h2 id="timeline">6. Multi-Track Motion Timeline &amp; Graph Editor</h2>
+        <p>
+          Fine-tune spatial motion trajectories and velocity curves with precision cubic-bezier handles. Seamlessly export complete vector projects to SVG, Lottie, and high-framerate MP4 video formats.
         </p>
       </main>
     </div>
